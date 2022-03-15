@@ -5,10 +5,10 @@ use futures_util::stream::StreamExt as _;
 #[post("/")]
 async fn index(mut payload: Multipart) -> HttpResponse {
     while let Some(item) = payload.next().await {
-        let mut field = item.unwrap();
-
-        while let Some(chunk) = field.next().await {
-            return HttpResponse::Ok().body("this does not show up :(");
+        if let Ok(mut field) = item {
+            while let Some(chunk) = field.next().await {
+                return HttpResponse::Ok().body("this does not show up :(");
+            }
         }
     }
 
